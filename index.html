@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flask API Tester</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    section {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input {
+      margin: 5px;
+    }
+    button {
+      margin-top: 10px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔧 ทดสอบ Flask API ด้วย HTML</h1>
+
+  <!-- ✅ GET -->
+  <section>
+    <h2>📖 ดูรายชื่อนักเรียน (GET)</h2>
+    <button onclick="getStudents()">โหลดข้อมูล</button>
+    <pre id="getResult">-</pre>
+  </section>
+
+  <!-- ✅ POST -->
+  <section>
+    <h2>➕ เพิ่มนักเรียน (POST)</h2>
+    <input type="text" id="postId" placeholder="ID">
+    <input type="text" id="postName" placeholder="ชื่อ">
+    <input type="text" id="postAge" placeholder="อายุ">
+    <br>
+    <button onclick="postStudent()">เพิ่ม</button>
+    <pre id="postResult">-</pre>
+  </section>
+
+  <!-- ✅ PUT -->
+  <section>
+    <h2>✏️ แก้ไขข้อมูลนักเรียน (PUT)</h2>
+    <input type="text" id="putId" placeholder="ID ที่จะแก้ไข">
+    <input type="text" id="putName" placeholder="ชื่อใหม่">
+    <input type="text" id="putAge" placeholder="อายุใหม่">
+    <br>
+    <button onclick="putStudent()">อัปเดต</button>
+    <pre id="putResult">-</pre>
+  </section>
+
+  <!-- ✅ DELETE -->
+  <section>
+    <h2>🗑️ ลบนักเรียน (DELETE)</h2>
+    <input type="text" id="deleteId" placeholder="ID ที่จะลบ">
+    <br>
+    <button onclick="deleteStudent()">ลบ</button>
+    <pre id="deleteResult">-</pre>
+  </section>
+
+  <script>
+    const BASE_URL = "http://127.0.0.1:5000";
+
+    async function getStudents() {
+      const res = await fetch(`${BASE_URL}/students`);
+      const data = await res.json();
+      document.getElementById("getResult").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function postStudent() {
+      const id = document.getElementById("postId").value;
+      const name = document.getElementById("postName").value;
+      const age = document.getElementById("postAge").value;
+
+      const res = await fetch(`${BASE_URL}/students`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, name, age })
+      });
+      const data = await res.json();
+      document.getElementById("postResult").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function putStudent() {
+      const id = document.getElementById("putId").value;
+      const name = document.getElementById("putName").value;
+      const age = document.getElementById("putAge").value;
+
+      const res = await fetch(`${BASE_URL}/students/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, age })
+      });
+      const data = await res.json();
+      document.getElementById("putResult").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteStudent() {
+      const id = document.getElementById("deleteId").value;
+      const res = await fetch(`${BASE_URL}/students/${id}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      document.getElementById("deleteResult").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
